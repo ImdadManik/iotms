@@ -1,0 +1,212 @@
+<div class="text-lg-end py-1">
+  <!--<suite-custom-code-block-0>-->
+  <!--</suite-custom-code-block-0>-->
+  <button
+    *abpPermission="'iotms.Devices.Create'"
+    class="btn btn-primary btn-sm"
+    type="button"
+    (click)="create()"
+  >
+    <i class="fa fa-plus me-1" aria-hidden="true"></i>
+    {{ '::NewDevice' | abpLocalization }}
+  </button>
+  <!--<suite-custom-code-block-1>-->
+  <!--</suite-custom-code-block-1>-->
+</div>
+<!--<suite-custom-code-block-2>-->
+<!--</suite-custom-code-block-2>-->
+<ngx-datatable default [list]="list" [rows]="service.data.items" [count]="service.data.totalCount">
+  <ngx-datatable-column
+    [name]="'AbpUi::Actions' | abpLocalization"
+    [maxWidth]="150"
+    [width]="150"
+    [sortable]="false"
+  >
+    <ng-template let-row="row" let-i="rowIndex" ngx-datatable-cell-template>
+      <div ngbDropdown container="body" class="d-inline-block">
+        <button
+          class="btn btn-primary btn-sm dropdown-toggle"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          ngbDropdownToggle
+        >
+          <i class="fa fa-cog me-1" aria-hidden="true"></i>
+          {{ 'AbpUi::Actions' | abpLocalization }}
+        </button>
+
+        <div ngbDropdownMenu>
+          <button ngbDropdownItem *abpPermission="'iotms.Devices.Edit'" (click)="update(row)">
+            {{ 'AbpUi::Edit' | abpLocalization }}
+          </button>
+
+          <button ngbDropdownItem *abpPermission="'iotms.Devices.Delete'" (click)="delete(row)">
+            {{ 'AbpUi::Delete' | abpLocalization }}
+          </button>
+        </div>
+      </div>
+    </ng-template>
+
+    <!--<suite-custom-code-block-3>-->
+    <!--</suite-custom-code-block-3>-->
+  </ngx-datatable-column>
+  <ngx-datatable-column name="{{ '::Name' | abpLocalization }}" prop="name">
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      {{ row.name }}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="{{ '::Status' | abpLocalization }}" prop="status">
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <ng-template [ngIf]="row.status" [ngIfThen]="yes" [ngIfElse]="no"></ng-template>
+
+      <ng-template #yes>
+        <div class="text-success">
+          <span [title]="'AbpUi::Yes' | abpLocalization">
+            <i class="fa fa-check" aria-hidden="true"></i>
+          </span>
+        </div>
+      </ng-template>
+
+      <ng-template #no>
+        <div class="text-danger">
+          <span [title]="'AbpUi::No' | abpLocalization">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </span>
+        </div>
+      </ng-template>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="{{ '::Temp' | abpLocalization }}" prop="temp">
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <ng-template [ngIf]="row.temp" [ngIfThen]="yes" [ngIfElse]="no"></ng-template>
+
+      <ng-template #yes>
+        <div class="text-success">
+          <span [title]="'AbpUi::Yes' | abpLocalization">
+            <i class="fa fa-check" aria-hidden="true"></i>
+          </span>
+        </div>
+      </ng-template>
+
+      <ng-template #no>
+        <div class="text-danger">
+          <span [title]="'AbpUi::No' | abpLocalization">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </span>
+        </div>
+      </ng-template>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="{{ '::LDR' | abpLocalization }}" prop="ldr">
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <ng-template [ngIf]="row.ldr" [ngIfThen]="yes" [ngIfElse]="no"></ng-template>
+
+      <ng-template #yes>
+        <div class="text-success">
+          <span [title]="'AbpUi::Yes' | abpLocalization">
+            <i class="fa fa-check" aria-hidden="true"></i>
+          </span>
+        </div>
+      </ng-template>
+
+      <ng-template #no>
+        <div class="text-danger">
+          <span [title]="'AbpUi::No' | abpLocalization">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </span>
+        </div>
+      </ng-template>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="{{ '::PIR' | abpLocalization }}" prop="pir">
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <ng-template [ngIf]="row.pir" [ngIfThen]="yes" [ngIfElse]="no"></ng-template>
+
+      <ng-template #yes>
+        <div class="text-success">
+          <span [title]="'AbpUi::Yes' | abpLocalization">
+            <i class="fa fa-check" aria-hidden="true"></i>
+          </span>
+        </div>
+      </ng-template>
+
+      <ng-template #no>
+        <div class="text-danger">
+          <span [title]="'AbpUi::No' | abpLocalization">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </span>
+        </div>
+      </ng-template>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="{{ '::Door' | abpLocalization }}" prop="door">
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <ng-template [ngIf]="row.door" [ngIfThen]="yes" [ngIfElse]="no"></ng-template>
+
+      <ng-template #yes>
+        <div class="text-success">
+          <span [title]="'AbpUi::Yes' | abpLocalization">
+            <i class="fa fa-check" aria-hidden="true"></i>
+          </span>
+        </div>
+      </ng-template>
+
+      <ng-template #no>
+        <div class="text-danger">
+          <span [title]="'AbpUi::No' | abpLocalization">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </span>
+        </div>
+      </ng-template>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="{{ '::MinTempAlert' | abpLocalization }}" prop="minTempAlert">
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      {{ row.minTempAlert }}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="{{ '::TempAlertFreq' | abpLocalization }}" prop="tempAlertFreq">
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      {{ row.tempAlertFreq }}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="{{ '::MinLDRAlert' | abpLocalization }}" prop="minLDRAlert">
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      {{ row.minLDRAlert }}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="{{ '::LDRAlertFreq' | abpLocalization }}" prop="ldrAlertFreq">
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      {{ row.ldrAlertFreq }}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="{{ '::Connection' | abpLocalization }}" prop="connection">
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <ng-template [ngIf]="row.connection" [ngIfThen]="yes" [ngIfElse]="no"></ng-template>
+
+      <ng-template #yes>
+        <div class="text-success">
+          <span [title]="'AbpUi::Yes' | abpLocalization">
+            <i class="fa fa-check" aria-hidden="true"></i>
+          </span>
+        </div>
+      </ng-template>
+
+      <ng-template #no>
+        <div class="text-danger">
+          <span [title]="'AbpUi::No' | abpLocalization">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </span>
+        </div>
+      </ng-template>
+    </ng-template>
+  </ngx-datatable-column>
+  <!--<suite-custom-code-block-4>-->
+  <!--</suite-custom-code-block-4>-->
+</ngx-datatable>
+
+<!--<suite-custom-code-block-5>-->
+<!--</suite-custom-code-block-5>-->
+
+@defer (when serviceDetail.isVisible) { @if (serviceDetail.isVisible) {
+<app-device-detail-modal />
+} }

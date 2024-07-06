@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <RootNamespace>iotms</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\iotms.Domain\iotms.Domain.csproj" />
+    <ProjectReference Include="..\iotms.Application.Contracts\iotms.Application.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MiniExcel" Version="1.31.2" />
+    <PackageReference Include="Volo.Abp.PermissionManagement.Application" Version="8.2.0" />
+    <PackageReference Include="Volo.Abp.FeatureManagement.Application" Version="8.2.0" />
+    <PackageReference Include="Volo.Abp.SettingManagement.Application" Version="8.2.0" />
+    <PackageReference Include="Volo.Saas.Host.Application" Version="8.2.0" />
+    <PackageReference Include="Volo.Abp.AuditLogging.Application" Version="8.2.0" />
+    <PackageReference Include="Volo.Abp.Identity.Pro.Application" Version="8.2.0" />
+    <PackageReference Include="Volo.Abp.OpenIddict.Pro.Application" Version="8.2.0" />
+    <PackageReference Include="Volo.Abp.Account.Pro.Public.Application" Version="8.2.0" />
+    <PackageReference Include="Volo.Abp.Account.Pro.Admin.Application" Version="8.2.0" />
+    <PackageReference Include="Volo.Abp.LanguageManagement.Application" Version="8.2.0" />
+    <PackageReference Include="Volo.Abp.TextTemplateManagement.Application" Version="8.2.0" />
+    <PackageReference Include="Volo.Abp.Gdpr.Application" Version="8.2.0" />
+  </ItemGroup>
+
+</Project>

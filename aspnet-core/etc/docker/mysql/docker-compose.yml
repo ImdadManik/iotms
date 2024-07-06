@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:   
+  mysql:
+    container_name: mysql-db
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: myPassw0rd
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks: 
+      - abp-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 5    
+  
+  redis:
+    container_name: redis
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - abp-network  
+    healthcheck:
+      test: ["CMD", "redis-cli","ping"]      
+
+volumes:
+  mysql_data:
+    name: iotms_mysql_data
+networks:
+  abp-network:
+    name: iotms-network
+    driver: bridge

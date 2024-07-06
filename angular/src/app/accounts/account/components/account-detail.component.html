@@ -1,0 +1,154 @@
+<abp-modal [busy]="service.isBusy" [(visible)]="service.isVisible">
+  <ng-template #abpHeader>
+    <!--<suite-custom-code-block-0>-->
+    <!--</suite-custom-code-block-0>-->
+    <h3>
+      <!--<suite-custom-code-block-1>-->
+      <!--</suite-custom-code-block-1>-->
+      {{ (service.selected ? 'AbpUi::Edit' : '::NewAccount') | abpLocalization }}
+      <!--<suite-custom-code-block-2>-->
+      <!--</suite-custom-code-block-2>-->
+    </h3>
+    <!--<suite-custom-code-block-3>-->
+    <!--</suite-custom-code-block-3>-->
+  </ng-template>
+
+  <ng-template #abpBody>
+    <!--<suite-custom-code-block-4>-->
+    <!--</suite-custom-code-block-4>-->
+    <form
+      [formGroup]="service.form"
+      id="account"
+      (ngSubmit)="service.submitForm()"
+      validateOnSubmit
+    >
+      <!--<suite-custom-code-block-5>-->
+      <!--</suite-custom-code-block-5>-->
+
+      <ul ngbNav #nav="ngbNav" class="nav-tabs">
+        <li ngbNavItem>
+          <a ngbNavLink>
+            {{ '::Account' | abpLocalization }}
+          </a>
+          <ng-template ngbNavContent>
+            <div class="mt-2 fade-in-top">
+              <div class="mb-3">
+                <label class="form-label" for="account-name">
+                  {{ '::Name' | abpLocalization }} *
+                </label>
+
+                <input
+                  id="account-name"
+                  formControlName="name"
+                  class="form-control"
+                  maxlength="250"
+                  autofocus
+                />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label" for="account-location">
+                  {{ '::Location' | abpLocalization }} *
+                </label>
+
+                <input
+                  id="account-location"
+                  formControlName="location"
+                  class="form-control"
+                  maxlength="250"
+                />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label" for="account-address">
+                  {{ '::Address' | abpLocalization }} *
+                </label>
+
+                <input
+                  id="account-address"
+                  formControlName="address"
+                  class="form-control"
+                  maxlength="250"
+                />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label" for="account-contact">
+                  {{ '::Contact' | abpLocalization }} *
+                </label>
+
+                <input id="account-contact" formControlName="contact" class="form-control" />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label" for="account-email">
+                  {{ '::Email' | abpLocalization }} *
+                </label>
+
+                <input id="account-email" formControlName="email" class="form-control" />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label" for="account-web">
+                  {{ '::Web' | abpLocalization }} *
+                </label>
+
+                <input
+                  id="account-web"
+                  formControlName="web"
+                  class="form-control"
+                  maxlength="500"
+                />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label" for="account-rooms">
+                  {{ '::Rooms' | abpLocalization }} *
+                </label>
+
+                <input
+                  type="number"
+                  id="account-rooms"
+                  formControlName="rooms"
+                  class="form-control"
+                />
+              </div>
+
+              <div class="form-check mb-3">
+                <input
+                  type="checkbox"
+                  id="account-status"
+                  formControlName="status"
+                  class="form-check-input"
+                />
+
+                <label for="account-status" class="form-check-label">
+                  {{ '::Status' | abpLocalization }} *
+                </label>
+              </div>
+            </div>
+          </ng-template>
+        </li>
+      </ul>
+      <div [ngbNavOutlet]="nav"></div>
+
+      <!--<suite-custom-code-block-6>-->
+      <!--</suite-custom-code-block-6>-->
+    </form>
+  </ng-template>
+
+  <ng-template #abpFooter>
+    <!--<suite-custom-code-block-7>-->
+    <!--</suite-custom-code-block-7>-->
+    <button type="button" class="btn btn-secondary" abpClose>
+      {{ 'AbpUi::Cancel' | abpLocalization }}
+    </button>
+    <!--<suite-custom-code-block-8>-->
+    <!--</suite-custom-code-block-8>-->
+    <abp-button iconClass="fa fa-check" buttonType="submit" formName="account">
+      {{ 'AbpUi::Save' | abpLocalization }}
+    </abp-button>
+    <!--<suite-custom-code-block-9>-->
+    <!--</suite-custom-code-block-9>-->
+  </ng-template>
+</abp-modal>

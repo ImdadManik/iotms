@@ -1,0 +1,367 @@
+<abp-page [title]="title | abpLocalization">
+  <abp-page-toolbar-container class="col">
+    <!--<suite-custom-code-block-0>-->
+    <!--</suite-custom-code-block-0>-->
+    <div class="text-lg-end pt-2">
+      <!--<suite-custom-code-block-1>-->
+      <!--</suite-custom-code-block-1>-->
+
+      <button
+        class="btn btn-primary btn-sm mx-2"
+        type="button"
+        [disabled]="service.isExportToExcelBusy"
+        (click)="exportToExcel()"
+      >
+        {{ '::ExportToExcel' | abpLocalization }}
+      </button>
+
+      <button
+        *abpPermission="'iotms.Accounts.Create'"
+        class="btn btn-primary btn-sm"
+        type="button"
+        (click)="create()"
+      >
+        <i class="fa fa-plus me-1" aria-hidden="true"></i>
+        {{ '::NewAccount' | abpLocalization }}
+      </button>
+      <!--<suite-custom-code-block-2>-->
+      <!--</suite-custom-code-block-2>-->
+    </div>
+  </abp-page-toolbar-container>
+
+  <abp-advanced-entity-filters localizationSourceName="" [list]="list">
+    @if (service.filters; as filters) {
+    <abp-advanced-entity-filters-form>
+      <form #filterForm (keyup.enter)="list.get()">
+        <!--<suite-custom-code-block-3>-->
+        <!--</suite-custom-code-block-3>-->
+        <div class="row">
+          <div class="col-12 col-sm-auto">
+            <div class="mb-3">
+              <label class="form-label" for="nameFilter">
+                {{ '::Name' | abpLocalization }}
+              </label>
+
+              <input
+                id="nameFilter"
+                class="form-control"
+                [(ngModel)]="filters.name"
+                [ngModelOptions]="{ standalone: true }"
+              />
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-auto">
+            <div class="mb-3">
+              <label class="form-label" for="locationFilter">
+                {{ '::Location' | abpLocalization }}
+              </label>
+
+              <input
+                id="locationFilter"
+                class="form-control"
+                [(ngModel)]="filters.location"
+                [ngModelOptions]="{ standalone: true }"
+              />
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-auto">
+            <div class="mb-3">
+              <label class="form-label" for="addressFilter">
+                {{ '::Address' | abpLocalization }}
+              </label>
+
+              <input
+                id="addressFilter"
+                class="form-control"
+                [(ngModel)]="filters.address"
+                [ngModelOptions]="{ standalone: true }"
+              />
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-auto">
+            <div class="mb-3">
+              <label class="form-label" for="contactFilter">
+                {{ '::Contact' | abpLocalization }}
+              </label>
+
+              <input
+                id="contactFilter"
+                class="form-control"
+                [(ngModel)]="filters.contact"
+                [ngModelOptions]="{ standalone: true }"
+              />
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-auto">
+            <div class="mb-3">
+              <label class="form-label" for="emailFilter">
+                {{ '::Email' | abpLocalization }}
+              </label>
+
+              <input
+                id="emailFilter"
+                class="form-control"
+                [(ngModel)]="filters.email"
+                [ngModelOptions]="{ standalone: true }"
+              />
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-auto">
+            <div class="mb-3">
+              <label class="form-label" for="webFilter">
+                {{ '::Web' | abpLocalization }}
+              </label>
+
+              <input
+                id="webFilter"
+                class="form-control"
+                [(ngModel)]="filters.web"
+                [ngModelOptions]="{ standalone: true }"
+              />
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-auto">
+            <div class="mb-3">
+              <label class="form-label" for="minRooms">
+                {{ '::MinRooms' | abpLocalization }}
+              </label>
+
+              <input
+                id="minRooms"
+                type="number"
+                class="form-control"
+                [(ngModel)]="filters.roomsMin"
+                [ngModelOptions]="{ standalone: true }"
+              />
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-auto">
+            <div class="mb-3">
+              <label class="form-label" for="maxRooms">
+                {{ '::MaxRooms' | abpLocalization }}
+              </label>
+
+              <input
+                id="maxRooms"
+                type="number"
+                class="form-control"
+                [(ngModel)]="filters.roomsMax"
+                [ngModelOptions]="{ standalone: true }"
+              />
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-auto">
+            <div class="mb-3">
+              <label class="form-label" for="statusFilter">
+                {{ '::Status' | abpLocalization }}
+              </label>
+
+              <select
+                name="status"
+                id="statusFilter"
+                class="form-select form-control"
+                [(ngModel)]="filters.status"
+                [ngModelOptions]="{ standalone: true }"
+                (change)="list.get()"
+              >
+                <option [ngValue]=""></option>
+                <option [ngValue]="true">{{ 'AbpUi::Yes' | abpLocalization }}</option>
+                <option [ngValue]="false">{{ 'AbpUi::No' | abpLocalization }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-auto align-self-end mb-3">
+            <div class="row">
+              <div class="col-6 col-sm-auto d-grid">
+                <button type="button" class="btn btn-outline-primary" (click)="clearFilters()">
+                  <span>{{ 'AbpUi::Clear' | abpLocalization }}</span>
+                </button>
+              </div>
+              <div class="col-6 col-sm-auto d-grid">
+                <button type="button" class="btn btn-primary" (click)="list.get()">
+                  <span>{{ 'AbpUi::Refresh' | abpLocalization }}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--<suite-custom-code-block-4>-->
+        <!--</suite-custom-code-block-4>-->
+      </form>
+    </abp-advanced-entity-filters-form>
+    }
+  </abp-advanced-entity-filters>
+  <!--<suite-custom-code-block-5>-->
+  <!--</suite-custom-code-block-5>-->
+  <div class="card">
+    <!--<suite-custom-code-block-6>-->
+    <!--</suite-custom-code-block-6>-->
+    <div class="card-body">
+      <!--<suite-custom-code-block-7>-->
+      <!--</suite-custom-code-block-7>-->
+      <ngx-datatable
+        #accountTable
+        default
+        [rows]="service.data.items"
+        [count]="service.data.totalCount"
+        [list]="list"
+      >
+        <!--<suite-custom-code-block-8>-->
+        <!--</suite-custom-code-block-8>-->
+
+        <!-- Row Detail Template -->
+        <ngx-datatable-row-detail rowHeight="100%">
+          <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+            <ul id="account-nav-tabs mb-0" ngbNav #nav="ngbNav" class="nav-tabs">
+              <li id="device-informations" ngbNavItem>
+                <a ngbNavLink>{{ '::Device' | abpLocalization }}</a>
+
+                <ng-template ngbNavContent>
+                  <app-device [accountId]="row.id" />
+                </ng-template>
+              </li>
+            </ul>
+
+            <div [ngbNavOutlet]="nav" class="m-0 fade-in-top"></div>
+          </ng-template>
+        </ngx-datatable-row-detail>
+
+        <ngx-datatable-column
+          [width]="50"
+          [resizeable]="false"
+          [sortable]="false"
+          [draggable]="false"
+          [canAutoResize]="false"
+        >
+          <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+            <a
+              href="javascript:void(0)"
+              class="ngx-datatable-toggle text-decoration-none text-muted fa"
+              [class.fa-angle-down]="!expanded"
+              [class.fa-angle-up]="expanded"
+              title="Expand/Collapse Row"
+              (click)="toggleExpandRow(row)"
+            >
+            </a>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column
+          [name]="'AbpUi::Actions' | abpLocalization"
+          [maxWidth]="150"
+          [width]="150"
+          [sortable]="false"
+        >
+          <ng-template let-row="row" let-i="rowIndex" ngx-datatable-cell-template>
+            <div ngbDropdown container="body" class="d-inline-block">
+              <button
+                class="btn btn-primary btn-sm dropdown-toggle"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                ngbDropdownToggle
+              >
+                <i class="fa fa-cog me-1" aria-hidden="true"></i>
+                {{ 'AbpUi::Actions' | abpLocalization }}
+              </button>
+
+              <div ngbDropdownMenu>
+                <button
+                  ngbDropdownItem
+                  *abpPermission="'iotms.Accounts.Edit'"
+                  (click)="update(row)"
+                >
+                  {{ 'AbpUi::Edit' | abpLocalization }}
+                </button>
+
+                <button
+                  ngbDropdownItem
+                  *abpPermission="'iotms.Accounts.Delete'"
+                  (click)="delete(row)"
+                >
+                  {{ 'AbpUi::Delete' | abpLocalization }}
+                </button>
+              </div>
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="{{ '::Name' | abpLocalization }}" prop="name">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.name }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="{{ '::Location' | abpLocalization }}" prop="location">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.location }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="{{ '::Address' | abpLocalization }}" prop="address">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.address }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="{{ '::Contact' | abpLocalization }}" prop="contact">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.contact }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="{{ '::Email' | abpLocalization }}" prop="email">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.email }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="{{ '::Web' | abpLocalization }}" prop="web">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.web }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="{{ '::Rooms' | abpLocalization }}" prop="rooms">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.rooms }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="{{ '::Status' | abpLocalization }}" prop="status">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <ng-template [ngIf]="row.status" [ngIfThen]="yes" [ngIfElse]="no"></ng-template>
+
+            <ng-template #yes>
+              <div class="text-success">
+                <span [title]="'AbpUi::Yes' | abpLocalization">
+                  <i class="fa fa-check" aria-hidden="true"></i>
+                </span>
+              </div>
+            </ng-template>
+
+            <ng-template #no>
+              <div class="text-danger">
+                <span [title]="'AbpUi::No' | abpLocalization">
+                  <i class="fa fa-times" aria-hidden="true"></i>
+                </span>
+              </div>
+            </ng-template>
+          </ng-template>
+        </ngx-datatable-column>
+        <!--<suite-custom-code-block-9>-->
+        <!--</suite-custom-code-block-9>-->
+      </ngx-datatable>
+      <!--<suite-custom-code-block-10>-->
+      <!--</suite-custom-code-block-10>-->
+    </div>
+  </div>
+  <!--<suite-custom-code-block-11>-->
+  <!--</suite-custom-code-block-11>-->
+</abp-page>
+<!--<suite-custom-code-block-12>-->
+<!--</suite-custom-code-block-12>-->
+
+@defer (when serviceDetail.isVisible) { @if (serviceDetail.isVisible) {
+<app-account-detail-modal />
+} }

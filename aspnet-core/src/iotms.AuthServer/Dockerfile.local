@@ -1,0 +1,13 @@
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+COPY bin/Release/net8.0/publish/ app/
+WORKDIR /app
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+RUN dotnet dev-certs https -v -ep openiddict.pfx -p ab83ca6c-52df-4c8b-8ef6-798d9ed94121
+
+FROM base AS final
+WORKDIR /app
+COPY --from=build /src .
+
+ENTRYPOINT ["dotnet", "iotms.AuthServer.dll"]
