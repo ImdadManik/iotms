@@ -3,7 +3,7 @@ using System.IO;
 
 public static class cLogs
 {
-    private static readonly string logFilePath = "D:\\Fandaqah\\iotms\\aspnet-core\\src\\iotms.Application\\bin\\Debug\\log.txt";
+    private static readonly string logFilePath = "log.txt";
 
     public static void Log(string message)
     {

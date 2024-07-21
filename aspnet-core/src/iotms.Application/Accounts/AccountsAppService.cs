@@ -33,7 +33,6 @@ namespace iotms.Accounts
             _downloadTokenCache = downloadTokenCache;
             _accountRepository = accountRepository;
             _accountManager = accountManager;
-
         }
 
         public virtual async Task<PagedResultDto<AccountDto>> GetListAsync(GetAccountsInput input)
@@ -62,23 +61,16 @@ namespace iotms.Accounts
         [Authorize(iotmsPermissions.Accounts.Create)]
         public virtual async Task<AccountDto> CreateAsync(AccountCreateDto input)
         {
-
             var account = await _accountManager.CreateAsync(
-            input.Rooms, input.Status, input.Name, input.Location, input.Address, input.Contact, input.Email, input.Web
-            );
-
+            input.Rooms, input.Status, input.Name, input.Location, input.Address, input.Contact, input.Email, input.Web);
             return ObjectMapper.Map<Account, AccountDto>(account);
         }
 
         [Authorize(iotmsPermissions.Accounts.Edit)]
         public virtual async Task<AccountDto> UpdateAsync(Guid id, AccountUpdateDto input)
         {
-
-            var account = await _accountManager.UpdateAsync(
-            id,
-            input.Rooms, input.Status, input.Name, input.Location, input.Address, input.Contact, input.Email, input.Web, input.ConcurrencyStamp
-            );
-
+            var account = await _accountManager.UpdateAsync(id, input.Rooms, input.Status, input.Name, input.Location, input.Address, 
+                input.Contact, input.Email, input.Web, input.ConcurrencyStamp);
             return ObjectMapper.Map<Account, AccountDto>(account);
         }
 
@@ -90,9 +82,7 @@ namespace iotms.Accounts
             {
                 throw new AbpAuthorizationException("Invalid download token: " + input.DownloadToken);
             }
-
             var items = await _accountRepository.GetListAsync(input.FilterText, input.Name, input.Location, input.Address, input.Contact, input.Email, input.Web, input.RoomsMin, input.RoomsMax, input.Status);
-
             var memoryStream = new MemoryStream();
             await memoryStream.SaveAsAsync(ObjectMapper.Map<List<Account>, List<AccountExcelDto>>(items));
             memoryStream.Seek(0, SeekOrigin.Begin);

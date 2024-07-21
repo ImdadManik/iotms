@@ -34,11 +34,13 @@ services:
       - AuthServer__RequireHttpsMetadata=false
       - AuthServer__Authority=http://iotms-authserver
       - AuthServer__MetaAddress=https://localhost:44334
-      - ConnectionStrings__Default=Server=pms-db003.fandaqah.com;Port=3307;Userid=IOTPortal;Password=Fandaqah@2020;Database=IOTPortal;
+      - ConnectionStrings__Default=Server=mysql;Port=3306;Userid=root;Password=myPassw0rd;Database=iotms;
       - Redis__Configuration=redis
     ports:
       - "44354:443"
     depends_on:
+      mysql:
+        condition: service_healthy
       redis:
         condition: service_healthy  
     restart: on-failure    
@@ -61,11 +63,13 @@ services:
       - AuthServer__Authority=https://localhost:44334
       - Kestrel__Certificates__Default__Path=/root/certificate/localhost.pfx
       - Kestrel__Certificates__Default__Password=76e8b26e-9052-4b40-97e4-06cae03ed5be
-      - ConnectionStrings__Default=Server=pms-db003.fandaqah.com;Port=3307;Userid=IOTPortal;Password=Fandaqah@2020;Database=IOTPortal;
+      - ConnectionStrings__Default=Server=mysql;Port=3306;Userid=root;Password=myPassw0rd;Database=iotms;
       - Redis__Configuration=redis
     ports:
       - "44334:443"
     depends_on:
+      mysql:
+        condition: service_healthy
       redis:
         condition: service_healthy
     restart: on-failure
@@ -83,12 +87,32 @@ services:
     environment:
       - OpenIddict__Applications__iotms_App__RootUrl=http://localhost:4200
       - OpenIddict__Applications__iotms_Swagger__RootUrl=https://localhost:44354
-      - ConnectionStrings__Default=Server=pms-db003.fandaqah.com;Port=3307;Userid=IOTPortal;Password=Fandaqah@2020;Database=IOTPortal;
+      - ConnectionStrings__Default=Server=mysql;Port=3306;Userid=root;Password=myPassw0rd;Database=iotms;
       - Redis__Configuration=redis
     restart: on-failure
+    depends_on:
+      mysql:
+        condition: service_healthy
     networks:
       - abp-network    
-
+  
+  mysql:
+    container_name: mysql-db
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: myPassw0rd
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks: 
+      - abp-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 5    
+  
   redis:
     container_name: redis
     image: redis:alpine
@@ -102,7 +126,6 @@ services:
 volumes:
   mysql_data:
     name: iotms_mysql_data
-
 networks:
   abp-network:
     name: iotms-network

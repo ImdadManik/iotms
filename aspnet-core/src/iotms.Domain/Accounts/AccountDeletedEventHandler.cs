@@ -1,5 +1,5 @@
 using iotms.Devices;
-
+using iotms.Emqx_UserAuth;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.DependencyInjection;
@@ -32,6 +32,11 @@ public class AccountDeletedEventHandler : ILocalEventHandler<EntityDeletedEventD
 
         try
         {
+            var devices =  await _deviceRepository.GetListByAccountIdAsync(eventData.Entity.Id);
+            foreach (Device device in devices)
+            {
+                cEmqxAPI.DeleteUsers(device);
+            }
             await _deviceRepository.DeleteManyAsync(await _deviceRepository.GetListByAccountIdAsync(eventData.Entity.Id));
 
         }

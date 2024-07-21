@@ -6,9 +6,11 @@ using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using iotms.Permissions;
-using iotms.Emqx_UserAuth; 
+using iotms.Emqx_UserAuth;
 using iotms.Emqx;
-using Newtonsoft.Json; 
+using Newtonsoft.Json;
+using iotms.Accounts;
+using MQTT_Subscriber;
 
 namespace iotms.Devices
 {
@@ -20,11 +22,15 @@ namespace iotms.Devices
         protected IDeviceRepository _deviceRepository;
         protected DeviceManager _deviceManager;
 
-        public DevicesAppServiceBase(IDeviceRepository deviceRepository, DeviceManager deviceManager)
+        protected IAccountRepository _accountRepository;
+        protected AccountManager _accountManager;
+        public DevicesAppServiceBase(IDeviceRepository deviceRepository, DeviceManager deviceManager, IAccountRepository accountRepository, AccountManager accountManager)
         {
-
             _deviceRepository = deviceRepository;
             _deviceManager = deviceManager;
+
+            _accountRepository = accountRepository;
+            _accountManager = accountManager;
         }
 
         public virtual async Task<PagedResultDto<DeviceDto>> GetListByAccountIdAsync(GetDeviceListInput input)
@@ -64,8 +70,7 @@ namespace iotms.Devices
         {
 
             Device _device = await _deviceRepository.GetAsync(input);
-            cEmqxAPI emqxAPI = new cEmqxAPI();
-            var response = emqxAPI.DeleteUsers(_device);
+            var response = cEmqxAPI.DeleteUsers(_device);
 
             if (response.IsSuccessful || response.StatusDescription == "Not Found")
             {
@@ -77,21 +82,21 @@ namespace iotms.Devices
         public virtual async Task<DeviceDto> CreateAsync(DeviceCreateDto input)
         {
             GenerateAES aes = new GenerateAES("098pub+1key+0pri", 256, "ABCXYZ123098");
-            cEmqxAPI emqxAPI = new cEmqxAPI();
-            var resp = emqxAPI.AddAuthUsers(input.Name, aes.Encrypt(input.Name), false);
+            var resp = cEmqxAPI.AddAuthUsers(input.Name, aes.Encrypt(input.Name), false);
             cLogs.Log("UserName: " + input.Name);
             cLogs.Log("pwd:" + aes.Encrypt(input.Name));
             cLogs.Log(resp.Content);
 
             if (resp.StatusDescription == "Created")
-            {
-                cLogs.Log(resp.StatusDescription);
-                cLogs.Log(input.Name);
-                cMsgPublisher.PublishMessage(JsonConvert.SerializeObject(input), input.Name, "device/" + input.Name);
+            { 
                 var device = await _deviceManager.CreateAsync(input.AccountId,
                 input.Name, input.Status, input.Temp, input.LDR, input.PIR, input.Door, input.MinTempAlert, input.TempAlertFreq, input.MinLDRAlert, input.LDRAlertFreq, input.Connection
                 );
-                return ObjectMapper.Map<Device, DeviceDto>(device);
+                
+                var objMapper = ObjectMapper.Map<Device, DeviceDto>(device);
+                string json_payload = MQTT_Subscriber.cMyDAL.GetSettingsPayload(input.Name, input.AccountId.ToString());
+                Emqx.cMsgPublisher.PublishMessage(json_payload, input.Name, "device/" + input.Name);
+                return objMapper;
             }
             else
                 return null;
@@ -100,10 +105,12 @@ namespace iotms.Devices
         [Authorize(iotmsPermissions.Devices.Edit)]
         public virtual async Task<DeviceDto> UpdateAsync(Guid id, DeviceUpdateDto input)
         {
-            cMsgPublisher.PublishMessage(JsonConvert.SerializeObject(input), input.Name, "device/" + input.Name);
-            var device = await _deviceManager.UpdateAsync(id, input.AccountId,
-            input.Name, input.Status, input.Temp, input.LDR, input.PIR, input.Door, input.MinTempAlert, input.TempAlertFreq, input.MinLDRAlert, input.LDRAlertFreq, input.Connection
-            );
+            string json_payload = MQTT_Subscriber.cMyDAL.GetSettingsPayload(input.Name, input.AccountId.ToString(), id.ToString());
+            Emqx.cMsgPublisher.PublishMessage(json_payload, input.Name, "device/" + input.Name);
+
+            var device = await _deviceManager.UpdateAsync(id, input.AccountId, input.Name, input.Status, input.Temp, input.LDR, 
+                input.PIR, input.Door, input.MinTempAlert, input.TempAlertFreq, input.MinLDRAlert, 
+                input.LDRAlertFreq, input.Connection);
 
             return ObjectMapper.Map<Device, DeviceDto>(device);
         }

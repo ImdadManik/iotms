@@ -47,7 +47,8 @@ namespace iotms.Controllers.Devices
         [HttpPost]
         public virtual Task<DeviceDto> CreateAsync(DeviceCreateDto input)
         {
-            return _devicesAppService.CreateAsync(input);
+            var device = _devicesAppService.CreateAsync(input);
+            return device;
         }
 
         [HttpPut]

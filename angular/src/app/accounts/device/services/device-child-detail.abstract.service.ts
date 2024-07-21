@@ -66,7 +66,8 @@ export abstract class AbstractDeviceDetailViewService {
         ldrAlertFreq ?? null,
         [Validators.required, Validators.min(5), Validators.max(1440)],
       ],
-      connection: [connection ?? 'false', [Validators.required]],
+      connection: [{ value: connection ?? 'false', disabled: true }, [Validators.required]],
+      
     });
   }
 
