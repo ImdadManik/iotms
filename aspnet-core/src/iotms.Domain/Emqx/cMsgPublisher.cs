@@ -11,7 +11,7 @@ namespace iotms.Emqx
         private static readonly string broker = "pms-db003.fandaqah.com";
         private static readonly int port = 1883;
 
-        public static void PublishMessage(string _payload, string _username, string _topics)
+        public static void PublishMessage(string _payload, string _username, string _topics, bool isRetained = true)
         {
             Random random = new Random();
             int randomNumber = random.Next(1000, 1000000);
@@ -38,12 +38,25 @@ namespace iotms.Emqx
                 if (connectResult.ResultCode == MqttClientConnectResultCode.Success)
                 {
                     Console.WriteLine("Connected to MQTT broker successfully.");
-                    var mqttMessage = new MqttApplicationMessageBuilder()
-                                    .WithTopic(topic)
-                                    .WithPayload(_payload)
-                                    .WithRetainFlag()
-                                    .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtMostOnce)
-                                    .Build();
+                    MqttApplicationMessage mqttMessage = null;
+
+                    if (isRetained)
+                    {
+                        mqttMessage = new MqttApplicationMessageBuilder()
+                                        .WithTopic(topic)
+                                        .WithPayload(_payload)
+                                        .WithRetainFlag()
+                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                        .Build();
+                    }
+                    else
+                    {
+                        mqttMessage = new MqttApplicationMessageBuilder()
+                                        .WithTopic(topic)
+                                        .WithPayload(_payload) 
+                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                        .Build(); 
+                    }
 
                     mqttClient.PublishAsync(mqttMessage).GetAwaiter().GetResult();
 

@@ -68,12 +68,12 @@ namespace iotms.Devices
         [Authorize(iotmsPermissions.Devices.Delete)]
         public virtual async Task DeleteAsync(Guid input)
         {
-
             Device _device = await _deviceRepository.GetAsync(input);
             var response = cEmqxAPI.DeleteUsers(_device);
-
             if (response.IsSuccessful || response.StatusDescription == "Not Found")
             {
+                //to disconnect the client automatically use topic : device/remove/devicename
+                Emqx.cMsgPublisher.PublishMessage("1", _device.Name, $"device/remove/{_device.Name}");
                 await _deviceRepository.DeleteAsync(input);
             }
         }
@@ -82,10 +82,7 @@ namespace iotms.Devices
         public virtual async Task<DeviceDto> CreateAsync(DeviceCreateDto input)
         {
             GenerateAES aes = new GenerateAES("098pub+1key+0pri", 256, "ABCXYZ123098");
-            var resp = cEmqxAPI.AddAuthUsers(input.Name, aes.Encrypt(input.Name), false);
-            cLogs.Log("UserName: " + input.Name);
-            cLogs.Log("pwd:" + aes.Encrypt(input.Name));
-            cLogs.Log(resp.Content);
+            var resp = cEmqxAPI.AddAuthUsers(input.Name, aes.Encrypt(input.Name), false); 
 
             if (resp.StatusDescription == "Created")
             { 
@@ -93,10 +90,9 @@ namespace iotms.Devices
                 input.Name, input.Status, input.Temp, input.LDR, input.PIR, input.Door, input.MinTempAlert, input.TempAlertFreq, input.MinLDRAlert, input.LDRAlertFreq, input.Connection
                 );
                 
-                var objMapper = ObjectMapper.Map<Device, DeviceDto>(device);
-                string json_payload = MQTT_Subscriber.cMyDAL.GetSettingsPayload(input.Name, input.AccountId.ToString());
-                Emqx.cMsgPublisher.PublishMessage(json_payload, input.Name, "device/" + input.Name);
-                return objMapper;
+                return ObjectMapper.Map<Device, DeviceDto>(device);
+                //string json_payload = MQTT_Subscriber.cMyDAL.GetSettingsPayload(input.Name, input.AccountId.ToString());
+                //Emqx.cMsgPublisher.PublishMessage(json_payload, input.Name, "device/" + input.Name);
             }
             else
                 return null;
@@ -104,14 +100,16 @@ namespace iotms.Devices
 
         [Authorize(iotmsPermissions.Devices.Edit)]
         public virtual async Task<DeviceDto> UpdateAsync(Guid id, DeviceUpdateDto input)
-        {
-            string json_payload = MQTT_Subscriber.cMyDAL.GetSettingsPayload(input.Name, input.AccountId.ToString(), id.ToString());
-            Emqx.cMsgPublisher.PublishMessage(json_payload, input.Name, "device/" + input.Name);
-
+        { 
             var device = await _deviceManager.UpdateAsync(id, input.AccountId, input.Name, input.Status, input.Temp, input.LDR, 
                 input.PIR, input.Door, input.MinTempAlert, input.TempAlertFreq, input.MinLDRAlert, 
                 input.LDRAlertFreq, input.Connection);
 
+            string json_payload = MQTT_Subscriber.cMyDAL.GetSettingsPayload(input.Name, input.AccountId.ToString(), id.ToString());
+            SensorPayload sensorPayload = JsonConvert.DeserializeObject<SensorPayload>(json_payload);
+            sensorPayload.DeviceStatus = device.Status;
+            var payload = JsonConvert.SerializeObject(sensorPayload);
+            Emqx.cMsgPublisher.PublishMessage(payload, input.Name, "device/" + input.Name);
             return ObjectMapper.Map<Device, DeviceDto>(device);
         }
     }

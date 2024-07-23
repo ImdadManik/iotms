@@ -44,3 +44,18 @@
 2024-07-21 12:47:15 - UserName: 00000000daeca42f
 2024-07-21 12:47:15 - pwd:r5CFJM3gSzLhPbV8nPizgIhLTvKhGn8D1D8mg6JHFcE=
 2024-07-21 12:47:16 - {"is_superuser":false,"user_id":"00000000daeca42f"}
+2024-07-22 11:12:27 - UserName: 00000000daeca42f
+2024-07-22 11:12:28 - pwd:r5CFJM3gSzLhPbV8nPizgIhLTvKhGn8D1D8mg6JHFcE=
+2024-07-22 11:12:29 - {"is_superuser":false,"user_id":"00000000daeca42f"}
+2024-07-22 13:05:19 - UserName: 00000000daeca42f
+2024-07-22 13:05:19 - pwd:r5CFJM3gSzLhPbV8nPizgIhLTvKhGn8D1D8mg6JHFcE=
+2024-07-22 13:05:19 - {"is_superuser":false,"user_id":"00000000daeca42f"}
+2024-07-22 14:17:58 - UserName: 00000000daeca42f
+2024-07-22 14:17:58 - pwd:r5CFJM3gSzLhPbV8nPizgIhLTvKhGn8D1D8mg6JHFcE=
+2024-07-22 14:17:58 - {"is_superuser":false,"user_id":"00000000daeca42f"}
+2024-07-23 11:09:55 - UserName: 00000000daeca42f
+2024-07-23 11:09:55 - pwd:r5CFJM3gSzLhPbV8nPizgIhLTvKhGn8D1D8mg6JHFcE=
+2024-07-23 11:09:55 - {"code":"NOT_FOUND","message":"Authenticator not found in the 'global' scope"}
+2024-07-23 11:19:38 - UserName: 00000000daeca42f
+2024-07-23 11:19:38 - pwd:r5CFJM3gSzLhPbV8nPizgIhLTvKhGn8D1D8mg6JHFcE=
+2024-07-23 11:19:38 - {"code":"NOT_FOUND","message":"Authenticator not found in the 'global' scope"}

@@ -54,8 +54,8 @@ namespace iotms.Emqx_UserAuth
             var resp = GetUserById(input.Name);
             if (resp.StatusDescription == "Not Found") return resp;
             var respClient = KickOutClientById(input.Name);
-
-
+            //to disconnect the client automatically use topic : device/remove/devicename
+            Emqx.cMsgPublisher.PublishMessage("1", input.Name, $"device/remove/{input.Name}", false);
             var options = new RestClientOptions(emqx_url)
             {
                 MaxTimeout = -1,
@@ -103,10 +103,12 @@ namespace iotms.Emqx_UserAuth
 
         public static RestResponse DeleteRetainMsgsByTopics(string username)
         {
-            string[] retainMsgTopics = ["device/", "device/connected"];
+            string[] retainMsgTopics = ["device%2F", "device%2Fconnected%2F", "sensor%2FPir%2F", "sensor%2FDoor%2F", "sensor%2FLdr%2F", "sensor%2FTemp%2F"];
             RestResponse? response = null;
             foreach (string topic in retainMsgTopics)
             {
+                string unescaped = emqx_url + delete_retain_msgs_by_topic + topic + username;
+                string escaped = Uri.EscapeDataString(unescaped);
                 response = null;
                 var options = new RestClientOptions(emqx_url)
                 {
