@@ -9,6 +9,7 @@ import {
   NgbTimepickerModule,
   NgbDateAdapter,
   NgbTimeAdapter,
+  NgbTooltipModule
 } from '@ng-bootstrap/ng-bootstrap';
 import { DeviceDetailViewService } from '../services/device-child-detail.service';
 
@@ -23,6 +24,7 @@ import { DeviceDetailViewService } from '../services/device-child-detail.service
     NgbDatepickerModule,
     NgbTimepickerModule,
     NgbNavModule,
+    NgbTooltipModule
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
@@ -30,6 +32,7 @@ import { DeviceDetailViewService } from '../services/device-child-detail.service
     { provide: NgbTimeAdapter, useClass: TimeAdapter },
   ],
   templateUrl: './device-child-detail.component.html',
+  host: { class: 'd-block' },
 })
 export class DeviceDetailModalComponent {
   public readonly service = inject(DeviceDetailViewService);

@@ -106,7 +106,7 @@
                 </label>
               </div>
 
-              <div class="mb-3">
+              <div class="mb-3" >
                 <label class="form-label" for="device-min-temp-alert">
                   {{ '::MinTempAlert' | abpLocalization }} *
                 </label>
@@ -117,6 +117,8 @@
                   formControlName="minTempAlert"
                   class="form-control"
                   max="50"
+                  placement="top" 
+                  ngbTooltip="If the temperature drops below the set threshold (default: 20°C), an alert will be triggered."
                 />
               </div>
 
@@ -132,6 +134,8 @@
                   class="form-control"
                   max="1440"
                   min="5"
+                  placement="top" 
+                  ngbTooltip="Set how often you want to receive temperature alerts (in minutes)."                
                 />
               </div>
 
@@ -146,6 +150,8 @@
                   formControlName="minLDRAlert"
                   class="form-control"
                   max="255"
+                  placement="top" 
+                  ngbTooltip="Set how often you want to receive light alerts (in minutes)."  
                 />
               </div>
 
