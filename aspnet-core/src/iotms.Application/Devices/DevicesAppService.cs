@@ -11,14 +11,16 @@ using iotms.Emqx;
 using Newtonsoft.Json;
 using iotms.Accounts;
 using MQTT_Subscriber;
+using iotms.Devices;
+using iotms.ApiResponse;
 
 namespace iotms.Devices
 {
+     
     [RemoteService(IsEnabled = false)]
     [Authorize(iotmsPermissions.Devices.Default)]
     public abstract class DevicesAppServiceBase : ApplicationService
-    {
-
+    { 
         protected IDeviceRepository _deviceRepository;
         protected DeviceManager _deviceManager;
 
@@ -79,30 +81,39 @@ namespace iotms.Devices
         }
 
         [Authorize(iotmsPermissions.Devices.Create)]
-        public virtual async Task<DeviceDto> CreateAsync(DeviceCreateDto input)
+        public virtual async Task<ApiResponse<DeviceDto>> CreateAsync(DeviceCreateDto input)
         {
             GenerateAES aes = new GenerateAES("098pub+1key+0pri", 256, "ABCXYZ123098");
-            var resp = cEmqxAPI.AddAuthUsers(input.Name, aes.Encrypt(input.Name), false); 
+            var resp = cEmqxAPI.AddAuthUsers(input.Name, aes.Encrypt(input.Name), false);
 
             if (resp.StatusDescription == "Created")
-            { 
+            {
                 var device = await _deviceManager.CreateAsync(input.AccountId,
                 input.Name, input.Status, input.Temp, input.LDR, input.PIR, input.Door, input.MinTempAlert, input.TempAlertFreq, input.MinLDRAlert, input.LDRAlertFreq, input.Connection
                 );
-                
-                return ObjectMapper.Map<Device, DeviceDto>(device);
-                //string json_payload = MQTT_Subscriber.cMyDAL.GetSettingsPayload(input.Name, input.AccountId.ToString());
-                //Emqx.cMsgPublisher.PublishMessage(json_payload, input.Name, "device/" + input.Name);
+
+                return new ApiResponse<DeviceDto>
+                {
+                    Success = true,
+                    Data = ObjectMapper.Map<Device, DeviceDto>(device),
+                    Message = "Device created successfully."
+                };
             }
             else
-                return null;
+            {
+                return new ApiResponse<DeviceDto>
+                {
+                    Success = false,
+                    Message = resp.Content
+                };
+            }
         }
 
         [Authorize(iotmsPermissions.Devices.Edit)]
         public virtual async Task<DeviceDto> UpdateAsync(Guid id, DeviceUpdateDto input)
-        { 
-            var device = await _deviceManager.UpdateAsync(id, input.AccountId, input.Name, input.Status, input.Temp, input.LDR, 
-                input.PIR, input.Door, input.MinTempAlert, input.TempAlertFreq, input.MinLDRAlert, 
+        {
+            var device = await _deviceManager.UpdateAsync(id, input.AccountId, input.Name, input.Status, input.Temp, input.LDR,
+                input.PIR, input.Door, input.MinTempAlert, input.TempAlertFreq, input.MinLDRAlert,
                 input.LDRAlertFreq, input.Connection);
 
             string json_payload = MQTT_Subscriber.cMyDAL.GetSettingsPayload(input.Name, input.AccountId.ToString(), id.ToString());

@@ -9,22 +9,37 @@ import { RestService, Rest } from '@abp/ng.core';
 import type { PagedResultDto } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
 import type { AppFileDescriptorDto, DownloadTokenResultDto, GetFileInput } from '../shared/models';
+import { Observable } from 'rxjs';
+
+// models.ts or a new file
+export interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  message: string;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class DeviceService {
   apiName = 'Default';
+  create(input: DeviceCreateDto, config?: Partial<Rest.Config>): Observable<ApiResponse<DeviceDto>> {
+    return this.restService.request<any, ApiResponse<DeviceDto>>({
+      method: 'POST',
+      url: '/api/app/devices',
+      body: input,
+    }, { apiName: this.apiName, ...config });
+  }
 
-  create = (input: DeviceCreateDto, config?: Partial<Rest.Config>) =>
-    this.restService.request<any, DeviceDto>(
-      {
-        method: 'POST',
-        url: '/api/app/devices',
-        body: input,
-      },
-      { apiName: this.apiName, ...config }
-    );
+  // create = (input: DeviceCreateDto, config?: Partial<Rest.Config>) =>
+  //   this.restService.request<any, DeviceDto>(
+  //     {
+  //       method: 'POST',
+  //       url: '/api/app/devices',
+  //       body: input,
+  //     },
+  //     { apiName: this.apiName, ...config }
+  //   );
 
   delete = (id: string, config?: Partial<Rest.Config>) =>
     this.restService.request<any, void>(

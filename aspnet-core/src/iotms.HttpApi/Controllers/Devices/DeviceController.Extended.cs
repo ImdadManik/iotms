@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Volo.Abp;
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.Application.Dtos;
-using iotms.Devices;
+using iotms.Devices; 
 
 namespace iotms.Controllers.Devices
 {
@@ -19,5 +19,6 @@ namespace iotms.Controllers.Devices
         public DeviceController(IDevicesAppService devicesAppService) : base(devicesAppService)
         {
         }
+         
     }
 }

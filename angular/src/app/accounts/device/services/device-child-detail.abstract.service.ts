@@ -2,9 +2,10 @@ import { inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ListService, TrackByService } from '@abp/ng.core';
 import { finalize, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 import type { DeviceDto } from '../../../proxy/devices/models';
-import { DeviceService } from '../../../proxy/devices/device.service';
+import { ApiResponse, DeviceService } from '../../../proxy/devices/device.service';
 
 export abstract class AbstractDeviceDetailViewService {
   protected readonly fb = inject(FormBuilder);
@@ -12,6 +13,7 @@ export abstract class AbstractDeviceDetailViewService {
 
   public readonly proxyService = inject(DeviceService);
   public readonly list = inject(ListService);
+  public errorMessage: string = '';
 
   accountId: string;
 
@@ -20,11 +22,13 @@ export abstract class AbstractDeviceDetailViewService {
   selected = {} as any;
   form: FormGroup | undefined;
 
-  protected createRequest() {
-    if (this.selected) {
-      return this.proxyService.update(this.selected.id, this.form.value);
-    }
-    return this.proxyService.create(this.form.value);
+  protected createRequest(): Observable<ApiResponse<DeviceDto>> {
+
+    return this.proxyService.create(this.form!.value);
+  }
+
+  protected updateRequest() {
+    return this.proxyService.update(this.selected.id, this.form!.value);
   }
 
   buildForm() {
@@ -67,7 +71,6 @@ export abstract class AbstractDeviceDetailViewService {
         [Validators.required, Validators.min(5), Validators.max(1440)],
       ],
       connection: [{ value: connection ?? 'false', disabled: true }, [Validators.required]],
-      
     });
   }
 
@@ -91,19 +94,37 @@ export abstract class AbstractDeviceDetailViewService {
   }
 
   submitForm() {
-    if (this.form.invalid) return;
-
+    if (this.form!.invalid) return;
     this.isBusy = true;
 
-    const request = this.createRequest().pipe(
-      finalize(() => (this.isBusy = false)),
-      tap(() => this.hideForm())
-    );
+    if (!this.selected) {
+      const request$: Observable<ApiResponse<DeviceDto>> = this.createRequest().pipe(
+        finalize(() => (this.isBusy = false))
+      );
 
-    request.subscribe(this.list.get);
+      request$.subscribe({
+        next: (response: ApiResponse<DeviceDto>) => {
+          if (response.success) {
+            this.list.get();
+            this.isBusy = false;
+            this.hideForm();
+          } else {
+            console.error(response.message);
+            this.errorMessage = JSON.parse(response.message).message;
+          }
+        },
+        error: (err: any) => { 
+          console.error('Request failed', err);
+          // Keep the modal open and display the error message
+        } 
+      });
+    }
+    else {
+
+    }
   }
 
   changeVisible(isVisible: boolean) {
     this.isVisible = isVisible;
-  }
+  } 
 }

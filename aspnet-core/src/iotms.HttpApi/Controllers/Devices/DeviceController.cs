@@ -7,6 +7,7 @@ using Volo.Abp;
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.Application.Dtos;
 using iotms.Devices;
+using iotms.ApiResponse;
 
 namespace iotms.Controllers.Devices
 {
@@ -45,7 +46,7 @@ namespace iotms.Controllers.Devices
         }
 
         [HttpPost]
-        public virtual Task<DeviceDto> CreateAsync(DeviceCreateDto input)
+        public virtual Task<ApiResponse<DeviceDto>> CreateAsync(DeviceCreateDto input)
         {
             var device = _devicesAppService.CreateAsync(input);
             return device;

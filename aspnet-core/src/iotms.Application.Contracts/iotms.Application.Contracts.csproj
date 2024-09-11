@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\iotms.Domain.Shared\iotms.Domain.Shared.csproj" />
+    <ProjectReference Include="..\iotms.Domain\iotms.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

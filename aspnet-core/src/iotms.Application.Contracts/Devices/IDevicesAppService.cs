@@ -1,3 +1,4 @@
+using iotms.ApiResponse;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,7 +9,6 @@ namespace iotms.Devices
 {
     public partial interface IDevicesAppService : IApplicationService
     {
-
         Task<PagedResultDto<DeviceDto>> GetListByAccountIdAsync(GetDeviceListInput input);
 
         Task<PagedResultDto<DeviceDto>> GetListAsync(GetDevicesInput input);
@@ -17,7 +17,7 @@ namespace iotms.Devices
 
         Task DeleteAsync(Guid id);
 
-        Task<DeviceDto> CreateAsync(DeviceCreateDto input);
+        Task<ApiResponse<DeviceDto>> CreateAsync(DeviceCreateDto input);
 
         Task<DeviceDto> UpdateAsync(Guid id, DeviceUpdateDto input);
     }

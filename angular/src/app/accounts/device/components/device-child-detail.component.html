@@ -1,25 +1,17 @@
 <abp-modal [busy]="service.isBusy" [(visible)]="service.isVisible">
   <ng-template #abpHeader>
-    <!--<suite-custom-code-block-0>-->
-    <!--</suite-custom-code-block-0>-->
     <h3>
-      <!--<suite-custom-code-block-1>-->
-      <!--</suite-custom-code-block-1>-->
       {{ (service.selected ? 'AbpUi::Edit' : '::NewDevice') | abpLocalization }}
-      <!--<suite-custom-code-block-2>-->
-      <!--</suite-custom-code-block-2>-->
     </h3>
-    <!--<suite-custom-code-block-3>-->
-    <!--</suite-custom-code-block-3>-->
   </ng-template>
 
   <ng-template #abpBody>
-    <!--<suite-custom-code-block-4>-->
-    <!--</suite-custom-code-block-4>-->
-    <form [formGroup]="service.form" id="device" (ngSubmit)="service.submitForm()" validateOnSubmit>
-      <!--<suite-custom-code-block-5>-->
-      <!--</suite-custom-code-block-5>-->
+    <!-- Display error message if exists -->
+    <div *ngIf="service.errorMessage" class="alert alert-danger">
+      {{ service.errorMessage | abpLocalization }}
+    </div>
 
+    <form [formGroup]="service.form" id="device" (ngSubmit)="service.submitForm()" validateOnSubmit>
       <ul ngbNav #nav="ngbNav" class="nav-tabs">
         <li ngbNavItem>
           <a ngbNavLink>
@@ -27,157 +19,115 @@
           </a>
           <ng-template ngbNavContent>
             <div class="mt-2 fade-in-top">
+              <!-- Device Name Field -->
               <div class="mb-3">
                 <label class="form-label" for="device-name">
                   {{ '::Name' | abpLocalization }} *
                 </label>
-
-                <input
-                  id="device-name"
-                  formControlName="name"
-                  class="form-control"
-                  maxlength="250"
-                  autofocus
-                />
+                <input id="device-name" formControlName="name" class="form-control" maxlength="250" autofocus />
+                <div *ngIf="service.form.get('name')?.invalid && service.form.get('name')?.touched" class="text-danger">
+                  {{ '::Name is required and must be less than 250 characters' | abpLocalization }}
+                </div>
               </div>
 
+              <!-- Device Status Checkbox -->
               <div class="form-check mb-3">
-                <input
-                  type="checkbox"
-                  id="device-status"
-                  formControlName="status"
-                  class="form-check-input"
-                />
-
+                <input type="checkbox" id="device-status" formControlName="status" class="form-check-input" />
                 <label for="device-status" class="form-check-label">
                   {{ '::Status' | abpLocalization }} *
                 </label>
               </div>
 
+              <!-- Device Temp Checkbox -->
               <div class="form-check mb-3">
-                <input
-                  type="checkbox"
-                  id="device-temp"
-                  formControlName="temp"
-                  class="form-check-input"
-                />
-
+                <input type="checkbox" id="device-temp" formControlName="temp" class="form-check-input" />
                 <label for="device-temp" class="form-check-label">
                   {{ '::Temp' | abpLocalization }} *
                 </label>
               </div>
 
+              <!-- Device LDR Checkbox -->
               <div class="form-check mb-3">
-                <input
-                  type="checkbox"
-                  id="device-ldr"
-                  formControlName="ldr"
-                  class="form-check-input"
-                />
-
+                <input type="checkbox" id="device-ldr" formControlName="ldr" class="form-check-input" />
                 <label for="device-ldr" class="form-check-label">
                   {{ '::LDR' | abpLocalization }} *
                 </label>
               </div>
 
+              <!-- Device PIR Checkbox -->
               <div class="form-check mb-3">
-                <input
-                  type="checkbox"
-                  id="device-pir"
-                  formControlName="pir"
-                  class="form-check-input"
-                />
-
+                <input type="checkbox" id="device-pir" formControlName="pir" class="form-check-input" />
                 <label for="device-pir" class="form-check-label">
                   {{ '::PIR' | abpLocalization }} *
                 </label>
               </div>
 
+              <!-- Device Door Checkbox -->
               <div class="form-check mb-3">
-                <input
-                  type="checkbox"
-                  id="device-door"
-                  formControlName="door"
-                  class="form-check-input"
-                />
-
+                <input type="checkbox" id="device-door" formControlName="door" class="form-check-input" />
                 <label for="device-door" class="form-check-label">
                   {{ '::Door' | abpLocalization }} *
                 </label>
               </div>
 
-              <div class="mb-3" >
+              <!-- Min Temp Alert Field -->
+              <div class="mb-3">
                 <label class="form-label" for="device-min-temp-alert">
                   {{ '::MinTempAlert' | abpLocalization }} *
                 </label>
-
-                <input
-                  type="number"
-                  id="device-min-temp-alert"
-                  formControlName="minTempAlert"
-                  class="form-control"
-                  max="50"
-                  placement="top" 
-                  ngbTooltip="If the temperature drops below the set threshold (default: 20°C), an alert will be triggered."
-                />
+                <input type="number" id="device-min-temp-alert" formControlName="minTempAlert" class="form-control"
+                  max="50" min="0"
+                  ngbTooltip="{{ 'If the temperature drops below the set threshold (default: 20°C), an alert will be triggered.' | abpLocalization }}" />
+                <div *ngIf="service.form.get('minTempAlert')?.invalid && service.form.get('minTempAlert')?.touched"
+                  class="text-danger">
+                  {{ '::MinTempAlert is required and must be between 0 and 50' | abpLocalization }}
+                </div>
               </div>
 
+              <!-- Temp Alert Frequency Field -->
               <div class="mb-3">
                 <label class="form-label" for="device-temp-alert-freq">
                   {{ '::TempAlertFreq' | abpLocalization }} *
                 </label>
-
-                <input
-                  type="number"
-                  id="device-temp-alert-freq"
-                  formControlName="tempAlertFreq"
-                  class="form-control"
-                  max="1440"
-                  min="5"
-                  placement="top" 
-                  ngbTooltip="Set how often you want to receive temperature alerts (in minutes)."                
-                />
+                <input type="number" id="device-temp-alert-freq" formControlName="tempAlertFreq" class="form-control"
+                  max="1440" min="5"
+                  ngbTooltip="{{ 'Set how often you want to receive temperature alerts (in minutes).' | abpLocalization }}" />
+                <div *ngIf="service.form.get('tempAlertFreq')?.invalid && service.form.get('tempAlertFreq')?.touched"
+                  class="text-danger">
+                  {{ '::TempAlertFreq is required and must be between 5 and 1440 minutes' | abpLocalization }}
+                </div>
               </div>
 
+              <!-- Min LDR Alert Field -->
               <div class="mb-3">
                 <label class="form-label" for="device-min-ldralert">
                   {{ '::MinLDRAlert' | abpLocalization }} *
                 </label>
-
-                <input
-                  type="number"
-                  id="device-min-ldralert"
-                  formControlName="minLDRAlert"
-                  class="form-control"
-                  max="255"
-                  placement="top" 
-                  ngbTooltip="Set how often you want to receive light alerts (in minutes)."  
-                />
+                <input type="number" id="device-min-ldralert" formControlName="minLDRAlert" class="form-control"
+                  max="255" min="0"
+                  ngbTooltip="{{ 'Set the minimum LDR threshold for alerts (in lux).' | abpLocalization }}" />
+                <div *ngIf="service.form.get('minLDRAlert')?.invalid && service.form.get('minLDRAlert')?.touched"
+                  class="text-danger">
+                  {{ '::MinLDRAlert is required and must be between 0 and 255' | abpLocalization }}
+                </div>
               </div>
 
+              <!-- LDR Alert Frequency Field -->
               <div class="mb-3">
                 <label class="form-label" for="device-ldralert-freq">
                   {{ '::LDRAlertFreq' | abpLocalization }} *
                 </label>
-
-                <input
-                  type="number"
-                  id="device-ldralert-freq"
-                  formControlName="ldrAlertFreq"
-                  class="form-control"
-                  max="1440"
-                  min="5"
-                />
+                <input type="number" id="device-ldralert-freq" formControlName="ldrAlertFreq" class="form-control"
+                  max="1440" min="5" />
+                <div *ngIf="service.form.get('ldrAlertFreq')?.invalid && service.form.get('ldrAlertFreq')?.touched"
+                  class="text-danger">
+                  {{ '::LDRAlertFreq is required and must be between 5 and 1440 minutes' | abpLocalization }}
+                </div>
               </div>
 
+              <!-- Connection Checkbox -->
               <div class="form-check mb-3">
-                <input
-                  type="checkbox"
-                  id="device-connection"
-                  formControlName="connection"
-                  class="form-check-input"
-                />
-
+                <input type="checkbox" id="device-connection" formControlName="connection" class="form-check-input" />
                 <label for="device-connection" class="form-check-label">
                   {{ '::Connection' | abpLocalization }} *
                 </label>
@@ -187,24 +137,15 @@
         </li>
       </ul>
       <div [ngbNavOutlet]="nav"></div>
-
-      <!--<suite-custom-code-block-6>-->
-      <!--</suite-custom-code-block-6>-->
     </form>
   </ng-template>
 
   <ng-template #abpFooter>
-    <!--<suite-custom-code-block-7>-->
-    <!--</suite-custom-code-block-7>-->
     <button type="button" class="btn btn-secondary" abpClose>
       {{ 'AbpUi::Cancel' | abpLocalization }}
     </button>
-    <!--<suite-custom-code-block-8>-->
-    <!--</suite-custom-code-block-8>-->
     <abp-button iconClass="fa fa-check" buttonType="submit" formName="device">
       {{ 'AbpUi::Save' | abpLocalization }}
     </abp-button>
-    <!--<suite-custom-code-block-9>-->
-    <!--</suite-custom-code-block-9>-->
   </ng-template>
 </abp-modal>
